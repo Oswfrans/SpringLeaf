@@ -2,11 +2,11 @@ import pandas as pd
 from pandas import *
 
 csv_file='C:\Users\oswin.frans\Desktop\Python\Springleaf_train.csv'
-tp=pd.read_csv(csv_file, sep=',', iterator=True, chunksize=1000, low_memory=False)
-df = concat(tp, ignore_index=True)
+#tp=pd.read_csv(csv_file, sep=',', iterator=True, chunksize=1000, low_memory=False)
+#df = concat(tp, ignore_index=True)
 #way to read all data
 
-#df=pd.read_csv(csv_file, sep=',', nrows=200)
+df=pd.read_csv(csv_file, sep=',', nrows=200)
 #read part of the data
 #delete rows if a certain column value is zero
 #df = df[df.line_race != 0]
@@ -18,16 +18,21 @@ print "Data Read"
 #clean it
 #Recode 1,5; 200, 202,216 ,222,237,274, 284,305, 325, 342,352, 353, 354,404,466,467,493(-1 is missing)
 torecode=[5,200,202,216 ,222,237,274, 284,305, 325, 342,352, 353, 354,404,466,467,493]
+dummyall=pd.DataFrame()
+#dummyal= dummyall.fillna(0)
+
 for i in torecode:
 	dumcat='dumcat'+str(i)+'.'
 	#dumcat2='dumcat'+str(i)+'.2'
-	dummy=pd.get_dummies(df.iloc[i], prefix=dumcat)
+	dummy=pd.get_dummies(df.iloc[:,i], prefix=dumcat)
 	#df=df.join(dummy.ix[:, dumcat2:])
 	print i
-	dummyall=dummyall.join(dummy)
-	
-df=df.join(dummyall)
+	#print dummy.head()
+	dummyall=dummyall.append(dummy)
 
+#print dummyall.head()	
+df=df.join(dummyall)
+print "Joined"
 #got to the third item before I ran out of memory, try concat one big memory string then concat that to main df
 
 #timestamp 75, 204, 217
@@ -37,15 +42,19 @@ df=df.join(dummyall)
 #some misssing values 74, 205 t/m 211
 
 #all missing values 44, 213,214,840
-df=df.drop(df.columns[[1,5,200,202,216 ,222,237,274, 284,305, 325, 342,352, 353, 354,404,466,467,493,44, 213, 840]], axis=1) 
+df=df.drop(df.columns[[0,1,5,200,202,216 ,222,237,274, 284,305, 325, 342,352, 353, 354,404,466,467,493,44, 213, 840]], axis=1) 
 
 #discard instances without data/features
 df=df.dropna(how='all')
+print "Dropped"
 
+df=df.fillna(0)
+print "Filled"
 #check
-df.to_excel('C:\Users\oswin.frans\Desktop\Check.xlsx',sheet_name='sheet1', index=False)
+#df.to_excel('C:\Users\oswin.frans\Desktop\Check.xlsx',sheet_name='sheet1', index=False)
 
-#Need to split the data in a training and CV set
+df.to_csv('C:\Users\oswin.frans\Desktop\Springleaf_cleaned.csv')
+#need to do dimensionality reduction/feature extraction
 
 #need to do dimensionality reduction/feature extraction
 #first do PCA and then do feature selection
