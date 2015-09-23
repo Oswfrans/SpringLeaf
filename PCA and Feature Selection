@@ -1,0 +1,34 @@
+import pandas as pd
+from pandas import *
+import numpy as np
+#from sklearn.decomposition import PCA
+import sklearn.decomposition as deco
+#import numpy as np
+
+#need to do dimensionality reduction/feature extraction
+#first do PCA and then do feature selection
+#Feature Selection http://scikit-learn.org/stable/modules/feature_selection.html
+#PCA http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html
+
+csv_file='C:\Users\oswin.frans\Desktop\Python\Springleaf_cleaned.csv'
+#need to define x and y
+
+
+df=pd.read_csv(csv_file, sep=',')
+print "Data read"
+
+#step I am skipping; creating a cross validation set
+
+#Dimensoniality Reduction
+
+x = (x - np.mean(x, 0)) / np.std(x, 0) # You need to normalize your data first
+
+#need to remove data with no variation
+remove_cols = np.where(np.all(x == np.mean(x, 0), 0))[0]
+x = np.delete(x, remove_cols, 1) 
+
+pca = deco.PCA(n_components) # n_components is the components number after reduction
+x_r = pca.fit(x).transform(x)
+print ('explained variance (first %d components): %.2f'%(n_components, sum(pca.explained_variance_ratio_)))
+
+#Feature Selection
