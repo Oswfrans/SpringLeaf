@@ -3,6 +3,8 @@ from pandas import *
 import numpy as np
 #from sklearn.decomposition import PCA
 import sklearn.decomposition as deco
+from sklearn.feature_selection import VarianceThreshold
+from sklearn import preprocessing
 #import numpy as np
 
 #need to do dimensionality reduction/feature extraction
@@ -11,24 +13,92 @@ import sklearn.decomposition as deco
 #PCA http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html
 
 csv_file='C:\Users\oswin.frans\Desktop\Python\Springleaf_cleaned.csv'
-#need to define x and y
 
-
-df=pd.read_csv(csv_file, sep=',')
+df=pd.read_csv(csv_file, sep=',', low_memory=False)
 print "Data read"
+
+#need to define x and y
+collist=df.columns.tolist()
+collist.remove("target")
+y=df['target']
+x=df[collist]
+
+
+
+##########NEED TO DEAL WITH DATETIMES
+
+
+#print list(x.columns.values)
+
+#print x.head()
+#print y
 
 #step I am skipping; creating a cross validation set
 
+#not sure if this helpful if I have time need to test this;
+#remove string and long data
+x = x.applymap(lambda z: np.nan if isinstance(z, basestring) and z.isspace() else z)
+x=x.fillna(-1)
+
+x = x.convert_objects(convert_numeric=True)
+
+
+#print x.dtypes
+
+#bla=x[x.convert_objects().dtypes != object]
+#print bla
+
+#c_with_strings  = x.apply(
+#       lambda column : 
+#          any([ isinstance(e, basestring) for e in column ])
+#       , axis=1) 
+
+#this method returned that all my columns had strings
+
+#print c_with_strings
+
+#x = x[~c_with_strings]
+#print x.head()
+
+#x = x.convert_objects(convert_numeric=True)
+
+#def to_number(s):
+#    try:
+#        s1 = float(s)
+#        return s1
+#    except ValueError:
+#        return s
+#
+#x = x.apply(lambda f : to_number(f[0]))  
+
+#print x.head()
+
 #Dimensoniality Reduction
 
-x = (x - np.mean(x, 0)) / np.std(x, 0) # You need to normalize your data first
+#x = (x - np.mean(x, 0)) / np.std(x, 0) # You need to normalize your data first
+#x_norm = (x - x.mean()) / (x.max() - x.min())
+x = x.values #returns a numpy array
+#print x.shape
+scaler = preprocessing.StandardScaler(with_mean=False)
+x_scaler = scaler.fit_transform(X=x.astype(np.float))
+
+#x_scaler = preprocessing.scale(x, axis=0, with_mean=True, with_std=True, copy=True)
+#x_scaled = scaler.fit_transform(x)
+x_norm = pd.DataFrame(x_scaler)
+
+print x_norm
 
 #need to remove data with no variation
-remove_cols = np.where(np.all(x == np.mean(x, 0), 0))[0]
-x = np.delete(x, remove_cols, 1) 
+sel = VarianceThreshold(threshold=(.8 * (1 - .8)))
+x_Neo=sel.fit_transform(x_norm)
 
-pca = deco.PCA(n_components) # n_components is the components number after reduction
-x_r = pca.fit(x).transform(x)
-print ('explained variance (first %d components): %.2f'%(n_components, sum(pca.explained_variance_ratio_)))
+#print x_Neo
+
+#remove_cols = np.where(np.all(x == np.mean(x, 0), 0))[0]
+#x = np.delete(x, remove_cols, 1) 
+
+#pca = deco.PCA(n_components=2) # n_components is the components number after reduction
+#x_r = pca.fit(x_Neo).transform(x_Neo)
+#print ('explained variance (first %d components): %.2f'%(n_components, sum(pca.explained_variance_ratio_)))
 
 #Feature Selection
