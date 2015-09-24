@@ -10,14 +10,19 @@ df=pd.read_csv(csv_file, sep=',', nrows=200)
 #read part of the data
 #delete rows if a certain column value is zero
 #df = df[df.line_race != 0]
-
+#df.to_csv('C:\Users\oswin.frans\Desktop\Springleaf_blaajhk.csv')
 print "Data Read"
+
+#print df.iloc[:,1932]
 
 #first step port these 200 rows back to excel/stata and see how to clean it
 #df.to_excel('C:\Users\oswin.frans\Desktop\Check.xlsx',sheet_name='sheet1', index=False)
 #clean it
 #Recode 1,5; 200, 202,216 ,222,237,274, 284,305, 325, 342,352, 353, 354,404,466,467,493(-1 is missing)
-torecode=[5,200,202,216 ,222,237,274, 284,305, 325, 342,352, 353, 354,404,466,467,493]
+#VAR_218 and VAR_240 are missing
+#221, 236, 272, 282, 303, 323, 340,350,351,352,402,464,465,491,1932
+torecode=[5,200,202,216 ,221, 236, 272, 282, 303, 323, 340,350,351,352,402,464,465,491,1932]
+#torecode=[5,200,202,216 ,222,237,274, 284,305, 325, 342,352, 353, 354,404,466,467,493,1934]
 dummyall=pd.DataFrame()
 #dummyal= dummyall.fillna(0)
 
@@ -33,7 +38,6 @@ for i in torecode:
 #print dummyall.head()	
 df=df.join(dummyall)
 print "Joined"
-#got to the third item before I ran out of memory, try concat one big memory string then concat that to main df
 
 #timestamp 75, 204, 217
 
@@ -42,7 +46,8 @@ print "Joined"
 #some misssing values 74, 205 t/m 211
 
 #all missing values 44, 213,214,840
-df=df.drop(df.columns[[0,1,5,200,202,216 ,222,237,274, 284,305, 325, 342,352, 353, 354,404,466,467,493,44, 213, 840]], axis=1) 
+#df=df.drop(df.columns[[0,1,5,200,202,216 ,222,237,274, 284,305, 325, 342,352, 353, 354,404,466,467,493,44, 213, 840, 1932]], axis=1) 
+df=df.drop(df.columns[[0,1,5,200,202,216 ,221, 236, 272, 282, 303, 323, 340,350,351,352,402,464,465,491,1932,44, 213, 838]], axis=1)
 
 #discard instances without data/features
 df=df.dropna(how='all')
