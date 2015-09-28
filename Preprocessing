@@ -5,6 +5,9 @@ import numpy as np
 import sklearn.decomposition as deco
 from sklearn.feature_selection import VarianceThreshold
 from sklearn import preprocessing
+from sklearn.preprocessing import StandardScaler
+from sklearn import linear_model, decomposition
+import matplotlib.pyplot as plt
 
 csv_file='C:\Users\oswin.frans\Desktop\Python\Springleaf_train.csv'
 #tp=pd.read_csv(csv_file, sep=',', iterator=True, chunksize=1000, low_memory=False)
@@ -67,7 +70,7 @@ df=df.fillna(0)
 print "Filled"
 #check
 
-df.to_csv('C:\Users\oswin.frans\Desktop\Springleaf_cleaned.csv')
+#df.to_csv('C:\Users\oswin.frans\Desktop\Springleaf_cleaned.csv')
 
 #need to do dimensionality reduction/feature extraction
 #first do PCA and then do feature selection
@@ -99,31 +102,59 @@ x = x.convert_objects(convert_numeric=True)
 #x = (x - np.mean(x, 0)) / np.std(x, 0) # You need to normalize your data first
 #x_norm = (x - x.mean()) / (x.max() - x.min())
 x = x.values #returns a numpy array
-#print x.shape
-scaler = preprocessing.StandardScaler(with_mean=False)
-x_scaler = scaler.fit_transform(X=x.astype(np.float))
+x_scalzer=StandardScaler().fit_transform(x)
+x_norm=pd.DataFrame(x_scalzer)
 
-#x_scaler = preprocessing.scale(x, axis=0, with_mean=True, with_std=True, copy=True)
-#x_scaled = scaler.fit_transform(x)
-x_norm = pd.DataFrame(x_scaler)
+x_norm=x_norm.fillna(-1)
 
-print x_norm
+#print np.any(np.isnan(x_norm))
+#print np.all(np.isfinite(x_norm))
 
 #need to remove data with no variation
 sel = VarianceThreshold(threshold=(.8 * (1 - .8)))
 x_Neo=sel.fit_transform(x_norm)
+x_Neo=pd.DataFrame(x_Neo)
 
-#print x_Neo
+#print x_Neo.head()
 
 #add datetime back
-
-
+x_Neo=x_Neo.join(dTimebin)
+x_Neo=x_Neo.fillna(-1)
 
 #remove_cols = np.where(np.all(x == np.mean(x, 0), 0))[0]
 #x = np.delete(x, remove_cols, 1) 
+#n_components == mle
+#pca = decomposition.PCA(n_components=='mle') # n_components is the components number after reduction
+pca= decomposition.PCA(n_components = 534)
+#to check with rule of thumb if things need to be removed
+#print pca.fit(x_Neo).explained_variance_
 
-#pca = deco.PCA(n_components=2) # n_components is the components number after reduction
-#x_r = pca.fit(x_Neo).transform(x_Neo)
-#print ('explained variance (first %d components): %.2f'%(n_components, sum(pca.explained_variance_ratio_)))
+#plt.figure(1, figsize=(4, 3))
+#plt.clf()
+#plt.axes([.2, .2, .7, .7])
+#plt.plot(pca.fit(x_Neo).explained_variance_, linewidth=2)
+#plt.axis('tight')
+#plt.xlabel('Variables')
+#plt.ylabel('explained_variance_')
+#plt.show()
+
+x_r = pca.fit(x_Neo).transform(x_Neo)
+x_r=pd.DataFrame(x_r)
+#print x_r.head()
+#print x_r.explained_variance_
+
+o=x_r.join(y)
 
 #Feature Selection
+#Decided to not Implement currently as 533 seems somewhat manageable, however when using the true dataset this may change
+#from sklearn.svm import LinearSVC
+#from sklearn.datasets import load_iris
+#iris = load_iris()
+#X, y = iris.data, iris.target
+#X.shape
+
+#X_new = LinearSVC(C=0.01, penalty="l1", dual=False).fit_transform(X, y)
+#X_new.shape
+
+#Creating a new file
+o.to_csv('C:\Users\oswin.frans\Desktop\Springleaf_preprocessed.csv')
