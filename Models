@@ -1,6 +1,21 @@
 #import Stuff
+from datetime import datetime
+from csv import DictReader
+from math import exp, log, sqrt
+from random import random
+import pickle
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.lda import LDA
+from sklearn.qda import QDA
+import numpy as np
+import matplotlib.pyplot as plt
 
 #Load data
+csv_file='C:\Users\oswin.frans\Desktop\Python\Springleaf_preprocessed.csv'
+
+df=pd.read_csv(csv_file, sep=',')
 
 #Logistic regression; check script
 
