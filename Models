@@ -254,6 +254,7 @@ learner = ftrl_proximal(alpha, beta, L1, L2, D, interaction)
 for e in range(epoch):
     loss = 0.
     count = 0
+    #write another for loop with you own df as the thing to iterate over
     for t,  x, y in data(train, D):  # data is a generator
 
         p = learner.predict(x)
@@ -278,6 +279,7 @@ print ('write result')
 ##############################################################################
 with open(submission, 'w') as outfile:
     outfile.write('ID,target\n')
+    #write another for loop with you own df as the thing to iterate over 
     for  ID, x, y in data(test, D):
         count+=1
         p = learner.predict(x)
