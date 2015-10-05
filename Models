@@ -17,6 +17,8 @@ csv_file='C:\Users\oswin.frans\Desktop\Python\Springleaf_preprocessed.csv'
 
 df=pd.read_csv(csv_file, sep=',')
 
+#normal model worked really well, just as expected
+
 #Logistic regression; check script
 #parameters
 #############################################################################
@@ -24,9 +26,9 @@ df=pd.read_csv(csv_file, sep=',')
 ##############################################################################
 
 # A, paths
-train='../input/train.csv'
-test='../input/test.csv'#'vali_100.tsv'
-submission = 'ftrl1sub.csv'  # path of to be outputted submission file
+train='C:\Users\oswin.frans\Desktop\Python\Springleaf_train.csv'
+test='C:\Users\oswin.frans\Desktop\Python\Springleaf_test.csv'#'vali_100.tsv'
+submission = 'C:\Users\oswin.frans\Desktop\Python\Springleaf_ftrl1sub.csv'  # path of to be outputted submission file
 
 # B, model
 alpha = .005  # learning rate
