@@ -14,7 +14,7 @@ import pickle
 
 # TL; DR, the main training process starts on line: 250,
 # you may want to start reading the code from there
-csv_file='C:\Users\oswin.frans\Desktop\Python\Springleaf_preprocessed.csv'
+csv_file='C:\Users\oswin.frans\Desktop\Python\Springleaf_preprocessed_V2.csv'
 
 ##############################################################################
 # parameters #################################################################
