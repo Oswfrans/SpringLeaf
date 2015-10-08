@@ -9,6 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn import linear_model, decomposition
 import matplotlib.pyplot as plt
 
+#ribbit
 csv_file='C:\Users\oswin.frans\Desktop\Python\Springleaf_train.csv'
 #tp=pd.read_csv(csv_file, sep=',', iterator=True, chunksize=1000, low_memory=False)
 #df = concat(tp, ignore_index=True)
